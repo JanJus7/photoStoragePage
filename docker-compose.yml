@@ -1,0 +1,54 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - app-net
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    volumes:
+      - uploads_data_photo:/app/uploads
+    networks:
+      - app-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    ports:
+      - "8080:8080"
+    networks:
+      - app-net
+
+  mongo:
+    image: mongo:6
+    volumes:
+      - mongo_data_photo:/data/db
+      - mongo_config_photo:/data/configdb
+    networks:
+      - app-net
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongo_data_photo:
+  uploads_data_photo:
+  mongo_config_photo:
+  keycloak_data:
+
+networks:
+  app-net:
+    driver: bridge
