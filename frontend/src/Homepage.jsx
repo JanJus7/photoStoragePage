@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getToken, initKeycloak } from "./api/auth";
+import { getToken } from "./api/auth";
 import keycloak from "./api/auth";
 
 export default function Homepage() {
@@ -13,14 +13,6 @@ export default function Homepage() {
       navigate("/app");
     }
   }, [navigate]);
-
-  const handleLogin = () => {
-    initKeycloak();
-  };
-
-  const handleRegister = () => {
-    keycloak.register();
-  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8">
@@ -37,13 +29,13 @@ export default function Homepage() {
       ) : (
         <>
           <button
-            onClick={handleLogin}
+            onClick={() => keycloak.login()}
             className="bg-white text-blue-600 font-bold px-6 py-2 rounded hover:bg-gray-200 transition"
           >
             Sign In
           </button>
           <button
-            onClick={handleRegister}
+            onClick={() => keycloak.register()}
             className="bg-white text-green-600 font-bold px-6 py-2 rounded hover:bg-gray-200 transition mt-4"
           >
             Sign Up

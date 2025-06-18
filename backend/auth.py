@@ -4,7 +4,7 @@ from flask import request, jsonify
 import functools
 
 KEYCLOAK_URL = "http://keycloak:8080"
-REALM = "carx"
+REALM = "carXpage"
 CLIENT_ID = "carx-spa"
 ALGORITHMS = ["RS256"]
 

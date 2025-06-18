@@ -2,13 +2,12 @@ import Keycloak from "keycloak-js";
 
 const keycloak = new Keycloak({
   url: "http://keycloak:8080/",
-  realm: "carx",
+  realm: "carXpage",
   clientId: "carx-spa",
 });
 
 export const initKeycloak = (options = {}) =>
   keycloak.init({
-    onLoad: "login-required",
     checkLoginIframe: false,
     redirectUri: window.location.origin,
     ...options,
