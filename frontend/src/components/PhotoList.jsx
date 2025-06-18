@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { getPhotos } from "../api/photos";
+import { getToken } from "../api/auth";
+console.log("PhotoList token:", getToken());
 
 export default function PhotoList({ refreshTrigger }) {
   const [photos, setPhotos] = useState([]);

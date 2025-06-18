@@ -12,6 +12,15 @@ export default defineConfig({
         target: "http://keycloak:8080",
         changeOrigin: true,
       },
+      "/api": {
+        target: "http://backend:5000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+      "/uploads": {
+        target: "http://backend:5000",
+        changeOrigin: true,
+      },
     },
   },
 });

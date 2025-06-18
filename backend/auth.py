@@ -8,15 +8,18 @@ REALM = "carXpage"
 CLIENT_ID = "carx-spa"
 ALGORITHMS = ["RS256"]
 
+
 def get_public_key():
     url = f"{KEYCLOAK_URL}/realms/{REALM}/protocol/openid-connect/certs"
     res = requests.get(url)
     jwks = res.json()
     return jwks["keys"]
 
+
 def decode_token(token):
     jwks = get_public_key()
     return jwt.decode(token, jwks, algorithms=ALGORITHMS, audience=CLIENT_ID)
+
 
 def requires_auth(required_roles=None):
     def decorator(f):
@@ -29,11 +32,15 @@ def requires_auth(required_roles=None):
             token = auth.split(" ")[1]
             try:
                 decoded = decode_token(token)
-                roles = decoded.get("realm_access", {}).get("roles", [])
+                roles = (
+                    decoded.get("resource_access", {})
+                    .get(CLIENT_ID, {})
+                    .get("roles", [])
+                )
                 request.user = {
                     "id": decoded["sub"],
                     "email": decoded.get("email"),
-                    "roles": roles
+                    "roles": roles,
                 }
 
                 if required_roles:
@@ -44,5 +51,7 @@ def requires_auth(required_roles=None):
 
             except Exception as e:
                 return jsonify({"error": str(e)}), 401
+
         return wrapper
+
     return decorator

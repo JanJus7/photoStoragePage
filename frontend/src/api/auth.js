@@ -19,10 +19,14 @@ export const logout = () =>
   keycloak.logout({ redirectUri: window.location.origin });
 export const getEmail = () => keycloak.tokenParsed?.email;
 
-export const authHeader = () => ({
-  headers: {
-    Authorization: `Bearer ${getToken()}`,
-  },
-});
+export const authHeader = () => {
+  const token = getToken();
+  console.log("Current token:", token);
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
 
 export default keycloak;

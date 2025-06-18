@@ -5,6 +5,7 @@ import PhotoForm from "./components/PhotoForm";
 import PhotoList from "./components/PhotoList";
 import Homepage from "./Homepage";
 import { getToken } from "./api/auth";
+import Settings from "./Settings";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
