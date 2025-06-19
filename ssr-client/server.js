@@ -32,7 +32,6 @@ const keycloak = new Keycloak(
 
 app.use(keycloak.middleware());
 
-// Ustawienia EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -51,7 +50,7 @@ app.get("/", keycloak.protect(), async (req, res) => {
     res.render("index", { photos, token });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Błąd podczas pobierania zdjęć");
+    res.status(500).send("Eror fetcing photos");
   }
 });
 
