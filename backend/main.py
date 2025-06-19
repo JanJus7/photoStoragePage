@@ -66,6 +66,29 @@ def delete_photo(filename):
 
     return jsonify({"message": "Photo deleted"}), 200
 
+@app.route("/photos/<filename>", methods=["PUT"])
+@requires_auth(["user", "moderator", "admin"])
+def update_photo(filename):
+    data = request.get_json()
+    new_description = data.get("description")
+
+    if not new_description:
+        return jsonify({"error": "No description provided"}), 400
+
+    photo = mongo_db.photos.find_one({"filename": filename})
+    if not photo:
+        return jsonify({"error": "Photo not found"}), 404
+
+    roles = request.user.get("roles", [])
+    if "admin" not in roles and photo["user_id"] != request.user["id"]:
+        return jsonify({"error": "Forbidden"}), 403
+
+    mongo_db.photos.update_one(
+        {"filename": filename},
+        {"$set": {"description": new_description}}
+    )
+    return jsonify({"message": "Photo updated"}), 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -21,3 +21,11 @@ export const deletePhoto = (filename) => {
       throw err;
     });
 };
+
+export const updatePhotoDescription = (filename, description) => {
+  return axios.put(
+    `${API_URL}photos/${filename}`,
+    { description },
+    authHeader()
+  );
+};

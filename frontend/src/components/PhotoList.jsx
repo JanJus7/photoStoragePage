@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { getPhotos, deletePhoto } from "../api/photos";
+import { getPhotos, deletePhoto, updatePhotoDescription } from "../api/photos";
 import { getClientRoles } from "../api/auth";
 
 export default function PhotoList({ refreshTrigger }) {
   const [photos, setPhotos] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [editMode, setEditMode] = useState(null);
+  const [newDescription, setNewDescription] = useState("");
   const isAdmin = getClientRoles().includes("admin");
 
   const fetchPhotos = async () => {
@@ -41,15 +43,51 @@ export default function PhotoList({ refreshTrigger }) {
   return (
     <div className="flex flex-col gap-4 items-center">
       <div className="w-full overflow-x-auto pb-4">
-        <div className="flex gap-2 w-max">
+        <div className="flex gap-4 flex-wrap justify-center">
           {photos.map((photo, index) => (
-            <div key={index} className="relative group">
+            <div key={index} className="relative group flex flex-col items-center border p-2 rounded-lg">
               <img
                 src={`/uploads/${photo.filename}`}
                 alt={photo.filename}
-                className="w-16 h-16 object-cover rounded cursor-pointer border hover:opacity-80"
+                className="w-24 h-24 object-cover rounded cursor-pointer border hover:opacity-80"
                 onClick={() => setSelectedPhoto(photo.filename)}
               />
+              <p className="text-sm text-gray-700 mt-1">
+                {photo.description || <i className="text-gray-400">Brak opisu</i>}
+              </p>
+
+              {editMode === photo.filename ? (
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    await updatePhotoDescription(photo.filename, newDescription);
+                    setEditMode(null);
+                    fetchPhotos();
+                  }}
+                  className="mt-1 flex gap-2"
+                >
+                  <input
+                    value={newDescription}
+                    onChange={(e) => setNewDescription(e.target.value)}
+                    className="px-2 py-1 border rounded"
+                    placeholder="New description"
+                  />
+                  <button type="submit" className="bg-green-500 text-white px-2 rounded">
+                    Save
+                  </button>
+                </form>
+              ) : (
+                <button
+                  onClick={() => {
+                    setEditMode(photo.filename);
+                    setNewDescription(photo.description || "");
+                  }}
+                  className="text-blue-600 text-sm underline mt-1"
+                >
+                  Edit description
+                </button>
+              )}
+
               {isAdmin && (
                 <button
                   onClick={() => handleDelete(photo.filename)}
