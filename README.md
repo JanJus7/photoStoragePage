@@ -60,6 +60,9 @@ Zawiera:
 - Konfiguracje OAuth2: redirecty, typy klientów, role
 - Użytkownicy testowi (z hasłami)
 
+Można to sprawdzić pod http://localhost:8080.
+login: admin
+hasło: admin
 ---
 
 ## Funkcje aplikacji
