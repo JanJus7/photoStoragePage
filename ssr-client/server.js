@@ -43,6 +43,14 @@ app.get("/", keycloak.protect(), async (req, res) => {
   }
 });
 
+app.get("/logout", keycloak.protect(), (req, res) => {
+  const redirectUrl = "http://localhost:3000";
+  req.session.destroy(() => {
+    res.redirect(`${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/logout?redirect_uri=${redirectUrl}`);
+  });
+});
+
+
 app.listen(3000, () => {
   console.log("SSR Client listening on http://localhost:3000");
 });

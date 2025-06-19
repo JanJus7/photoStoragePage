@@ -3,6 +3,8 @@
   "auth-server-url": "http://keycloak:8080",
   "ssl-required": "external",
   "resource": "carx-ssr",
-  "public-client": true,
+  "credentials": {
+    "secret": "CKcoF4cQwiX1xPdZfXdyIlPUHwWG4uEx"
+  },
   "confidential-port": 0
 }

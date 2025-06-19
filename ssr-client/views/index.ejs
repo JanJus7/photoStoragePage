@@ -11,5 +11,10 @@
         <li><img src="http://localhost:5000/uploads/<%= p.filename %>" height="100"/></li>
       <% }) %>
     </ul>
+    <form action="/logout" method="get" style="margin-bottom: 1em;">
+      <button style="padding: 0.5em 1em; background-color: crimson; color: white; border: none; border-radius: 4px;">
+        Logout
+      </button>
+    </form>
   </body>
 </html>
