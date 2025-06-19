@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SSR Client</title>
+  </head>
+  <body>
+    <h1>Hello <%= user.preferred_username %>!</h1>
+    <h2>Your photos:</h2>
+    <ul>
+      <% photos.forEach(p => { %>
+        <li><img src="http://localhost:5000/uploads/<%= p.filename %>" height="100"/></li>
+      <% }) %>
+    </ul>
+  </body>
+</html>
