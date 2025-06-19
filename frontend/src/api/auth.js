@@ -1,7 +1,7 @@
 import Keycloak from "keycloak-js";
 
 const keycloak = new Keycloak({
-  url: "http://keycloak:8080/",
+  url: import.meta.env.VITE_KEYCLOAK_URL || "http://localhost:8080",
   realm: "carXpage",
   clientId: "carx-spa",
 });

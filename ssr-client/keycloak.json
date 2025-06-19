@@ -1,10 +1,11 @@
 {
   "realm": "carXpage",
   "auth-server-url": "http://keycloak:8080",
-  "ssl-required": "external",
+  "ssl-required": "none",
   "resource": "carx-ssr",
   "credentials": {
     "secret": "CKcoF4cQwiX1xPdZfXdyIlPUHwWG4uEx"
   },
+  "public-client": false,
   "confidential-port": 0
 }

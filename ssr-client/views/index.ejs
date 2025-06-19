@@ -8,7 +8,7 @@
     <h2>Your photos:</h2>
     <ul>
       <% photos.forEach(p => { %>
-        <li><img src="http://localhost:5000/uploads/<%= p.filename %>" height="100"/></li>
+        <li><img src="/uploads/<%= p.filename %>" height="100"/></li>
       <% }) %>
     </ul>
     <form action="/logout" method="get" style="margin-bottom: 1em;">

@@ -6,8 +6,14 @@ const path = require("path");
 
 const app = express();
 
+const KEYCLOAK_URL = "http://localhost:8080";
+const REALM = "carXpage";
+
 const memoryStore = new session.MemoryStore();
-const keycloak = new Keycloak({ store: memoryStore }, path.join(__dirname, "./keycloak.json"));
+const keycloak = new Keycloak(
+  { store: memoryStore },
+  path.join(__dirname, "./keycloak.json")
+);
 
 app.use(
   session({
@@ -43,8 +49,33 @@ app.get("/", keycloak.protect(), async (req, res) => {
   }
 });
 
+app.use("/uploads", keycloak.protect(), async (req, res) => {
+  const url = `http://backend:5000${req.originalUrl}`;
+  try {
+    const token = req.kauth.grant.access_token.token;
+
+    const response = await axios.get(url, {
+      responseType: "stream",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    res.setHeader("Content-Type", response.headers["content-type"] || "application/octet-stream");
+    if (response.headers["content-length"]) {
+      res.setHeader("Content-Length", response.headers["content-length"]);
+    }
+
+    response.data.pipe(res);
+  } catch (error) {
+    console.error("Proxy /uploads error:", error.message);
+    res.status(500).send("Failed to load file.");
+  }
+});
+
+
 app.get("/logout", keycloak.protect(), (req, res) => {
-  const redirectUrl = "http://localhost:3000";
+  const redirectUrl = req.protocol + "://" + req.headers.host;
   req.session.destroy(() => {
     res.redirect(`${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/logout?redirect_uri=${redirectUrl}`);
   });
