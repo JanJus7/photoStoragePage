@@ -7,7 +7,7 @@ const CLIENT_SECRET = "Zkh1PQHHPQ8SSe3nGivNHjS9fdklQoCR";
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
-async function waitForKeycloak(retries = 10) {
+async function waitForKeycloak(retries = 40) {
   const url = `${KEYCLOAK_URL}/realms/${REALM}`;
   for (let i = 0; i < retries; i++) {
     try {
