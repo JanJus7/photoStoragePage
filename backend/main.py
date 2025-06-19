@@ -37,7 +37,6 @@ def upload_photo():
 
 
 @app.route("/uploads/<filename>")
-@requires_auth(["user", "moderator", "admin"])
 def serve_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 

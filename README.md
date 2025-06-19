@@ -17,7 +17,10 @@ Wielomodułowy system do zarządzania zdjęciami z autoryzacją opartą o OAuth2
 
 ## Uruchamianie
 W folderze `frontend` utworzyć plik **.env** i wstawić do niego ten tekst:
-`VITE_API_URL=/api/`
+```bash
+VITE_KEYCLOAK_URL=http://localhost:8080
+VITE_API_URL=http://localhost:5000/api/
+```
 
 Następnie:
 
@@ -26,7 +29,7 @@ Następnie:
 docker-compose up --build
 ```
 
-**Pierwsze uruchomienie** zaimportuje gotowy realm `carXpage` z konfiguracją Keycloak.
+**Pierwsze uruchomienie** zaimportuje gotowy realm `carXpage` z konfiguracją Keycloak. Dopuki w aplikacji SPA nie doda się żadnych zdjęć do bazy danych, b2b będzie wypisywał pustą tablicę. Po dodaniu zdjęć, trzeba zrestartować kontener b2b żeby pokazał że te zdjęcia faktycznie tam są. 
 
 ---
 
