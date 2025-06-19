@@ -53,6 +53,14 @@ services:
     networks:
       - app-net
 
+  b2b-client:
+    build: ./b2b-client
+    depends_on:
+      - backend
+      - keycloak
+    networks:
+      - app-net
+
 volumes:
   mongo_data_photo:
   uploads_data_photo:
