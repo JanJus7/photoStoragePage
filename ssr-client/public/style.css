@@ -1,0 +1,26 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f7f7f7;
+}
+
+h1 {
+  color: #333;
+}
+
+.photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.photo {
+  border: 1px solid #ccc;
+  padding: 10px;
+  background: white;
+  width: 200px;
+}
+
+.photo img {
+  max-width: 100%;
+}

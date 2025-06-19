@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>SSR Client</title>
-  </head>
-  <body>
-    <h1>Hello <%= user.preferred_username %>!</h1>
-    <h2>Your photos:</h2>
-    <ul>
-      <% photos.forEach(p => { %>
-        <li><img src="/uploads/<%= p.filename %>" height="100"/></li>
-      <% }) %>
-    </ul>
-    <form action="/logout" method="get" style="margin-bottom: 1em;">
-      <button style="padding: 0.5em 1em; background-color: crimson; color: white; border: none; border-radius: 4px;">
-        Logout
-      </button>
-    </form>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Moje zdjęcia</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Zdjęcia użytkownika</h1>
+
+  <div class="photos">
+    <% photos.forEach(photo => { %>
+      <div class="photo">
+        <img src="http://localhost:5000/uploads/<%= photo.filename %>" alt="<%= photo.filename %>">
+        <p><%= photo.filename %></p>
+      </div>
+    <% }) %>
+  </div>
+
+  <a href="/logout">Wyloguj się</a>
+</body>
 </html>

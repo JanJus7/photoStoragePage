@@ -46,16 +46,6 @@ services:
     ports:
       - "27017:27017"
 
-  ssr-client:
-    build: ./ssr-client
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-      - keycloak
-    networks:
-      - app-net
-
   b2b-client:
     build: ./b2b-client
     depends_on:
