@@ -7,7 +7,7 @@ const path = require("path");
 const app = express();
 
 const memoryStore = new session.MemoryStore();
-const keycloak = new Keycloak({ store: memoryStore }, path.join(__dirname, "config/keycloak.json"));
+const keycloak = new Keycloak({ store: memoryStore }, path.join(__dirname, "./keycloak.json"));
 
 app.use(
   session({
