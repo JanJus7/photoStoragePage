@@ -4,7 +4,6 @@ from werkzeug.utils import secure_filename
 from flask_cors import CORS
 from flask import Flask, request, jsonify, send_from_directory
 from auth import requires_auth
-import requests
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev")
@@ -18,7 +17,7 @@ mongo_client = MongoClient("mongodb://mongo:27017")
 mongo_db = mongo_client["carx_db"]
 
 KEYCLOAK_URL = "http://keycloak:8080"
-REALM = "carx"
+REALM = "carXpage"
 CLIENT_ID = "carx-spa"
 
 
@@ -51,56 +50,6 @@ def get_photos():
     else:
         photos = list(mongo_db.photos.find({"user_id": request.user["id"]}, {"_id": 0}))
     return jsonify(photos)
-
-
-@app.route("/users", methods=["GET"])
-@requires_auth(["admin"])
-def list_users():
-    admin_token = request.headers.get("Authorization", "").split(" ")[1]
-    res = requests.get(
-        f"{KEYCLOAK_URL}/admin/realms/{REALM}/users",
-        headers={"Authorization": f"Bearer {admin_token}"},
-    )
-
-    users = res.json()
-    simplified = [
-        {"id": u["id"], "username": u["username"], "email": u.get("email")}
-        for u in users
-    ]
-    return jsonify(simplified)
-
-
-@app.route("/users/<user_id>/promote", methods=["POST"])
-@requires_auth(["admin"])
-def promote_user(user_id):
-    admin_token = request.headers.get("Authorization", "").split(" ")[1]
-
-    clients_res = requests.get(
-        f"{KEYCLOAK_URL}/admin/realms/{REALM}/clients",
-        headers={"Authorization": f"Bearer {admin_token}"},
-    )
-    client_id = next(
-        (c["id"] for c in clients_res.json() if c["clientId"] == CLIENT_ID), None
-    )
-
-    role_res = requests.get(
-        f"{KEYCLOAK_URL}/admin/realms/{REALM}/clients/{client_id}/roles",
-        headers={"Authorization": f"Bearer {admin_token}"},
-    )
-    moderator_role = next(
-        (r for r in role_res.json() if r["name"] == "moderator"), None
-    )
-
-    assign_res = requests.post(
-        f"{KEYCLOAK_URL}/admin/realms/{REALM}/users/{user_id}/role-mappings/clients/{client_id}",
-        headers={
-            "Authorization": f"Bearer {admin_token}",
-            "Content-Type": "application/json",
-        },
-        json=[moderator_role],
-    )
-
-    return jsonify({"status": assign_res.status_code})
 
 
 if __name__ == "__main__":

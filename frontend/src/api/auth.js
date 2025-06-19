@@ -14,9 +14,10 @@ export const initKeycloak = (options = {}) =>
   });
 
 export const getToken = () => keycloak.token;
-export const getRoles = () => keycloak.tokenParsed?.realm_access?.roles || [];
+
 export const logout = () =>
   keycloak.logout({ redirectUri: window.location.origin });
+
 export const getEmail = () => keycloak.tokenParsed?.email;
 
 export const authHeader = () => {
