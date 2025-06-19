@@ -3,17 +3,26 @@ const session = require("express-session");
 const Keycloak = require("keycloak-connect");
 const axios = require("axios");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
-const KEYCLOAK_URL = "http://localhost:8080";
+const KEYCLOAK_URL = "http://keycloak:8080";
 const REALM = "carXpage";
 
 const memoryStore = new session.MemoryStore();
-const keycloak = new Keycloak(
-  { store: memoryStore },
-  path.join(__dirname, "./keycloak.json")
+
+const keycloakRawConfig = fs.readFileSync(
+  path.join(__dirname, "keycloak.json"),
+  "utf8"
 );
+const keycloakParsed = JSON.parse(keycloakRawConfig);
+keycloakParsed["auth-server-url"] = "http://proxy";
+
+
+const keycloak = new Keycloak({ store: memoryStore }, keycloakParsed);
+
+app.set("trust proxy", true);
 
 app.use(
   session({
@@ -21,6 +30,11 @@ app.use(
     resave: false,
     saveUninitialized: true,
     store: memoryStore,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
+    },
   })
 );
 
@@ -33,6 +47,11 @@ app.get("/", keycloak.protect(), async (req, res) => {
   try {
     const token = req.kauth.grant.access_token.token;
 
+    const decoded = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString("utf-8")
+    );
+    console.log(">>> SSR Access Token decoded:\n", JSON.stringify(decoded, null, 2));
+
     const photosRes = await axios.get("http://backend:5000/photos", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -44,7 +63,7 @@ app.get("/", keycloak.protect(), async (req, res) => {
       photos: photosRes.data,
     });
   } catch (err) {
-    console.error(err);
+    console.error("SSR error:", err.response?.data || err.message);
     res.status(500).send("Error fetching photos.");
   }
 });
@@ -61,7 +80,10 @@ app.use("/uploads", keycloak.protect(), async (req, res) => {
       },
     });
 
-    res.setHeader("Content-Type", response.headers["content-type"] || "application/octet-stream");
+    res.setHeader(
+      "Content-Type",
+      response.headers["content-type"] || "application/octet-stream"
+    );
     if (response.headers["content-length"]) {
       res.setHeader("Content-Length", response.headers["content-length"]);
     }
@@ -73,14 +95,14 @@ app.use("/uploads", keycloak.protect(), async (req, res) => {
   }
 });
 
-
 app.get("/logout", keycloak.protect(), (req, res) => {
   const redirectUrl = req.protocol + "://" + req.headers.host;
   req.session.destroy(() => {
-    res.redirect(`${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/logout?redirect_uri=${redirectUrl}`);
+    res.redirect(
+      `${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/logout?redirect_uri=${redirectUrl}`
+    );
   });
 });
-
 
 app.listen(3000, () => {
   console.log("SSR Client listening on http://localhost:3000");

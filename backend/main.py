@@ -16,10 +16,6 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 mongo_client = MongoClient("mongodb://mongo:27017")
 mongo_db = mongo_client["carx_db"]
 
-KEYCLOAK_URL = "http://keycloak:8080"
-REALM = "carXpage"
-CLIENT_ID = "carx-spa"
-
 
 @app.route("/photos", methods=["POST"])
 @requires_auth(["user", "moderator", "admin"])
@@ -66,6 +62,7 @@ def delete_photo(filename):
 
     return jsonify({"message": "Photo deleted"}), 200
 
+
 @app.route("/photos/<filename>", methods=["PUT"])
 @requires_auth(["user", "moderator", "admin"])
 def update_photo(filename):
@@ -84,8 +81,7 @@ def update_photo(filename):
         return jsonify({"error": "Forbidden"}), 403
 
     mongo_db.photos.update_one(
-        {"filename": filename},
-        {"$set": {"description": new_description}}
+        {"filename": filename}, {"$set": {"description": new_description}}
     )
     return jsonify({"message": "Photo updated"}), 200
 
