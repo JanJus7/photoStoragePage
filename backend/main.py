@@ -52,5 +52,20 @@ def get_photos():
     return jsonify(photos)
 
 
+@app.route("/photos/<filename>", methods=["DELETE"])
+@requires_auth(["admin"])
+def delete_photo(filename):
+    photo = mongo_db.photos.find_one({"filename": filename})
+    if not photo:
+        return jsonify({"error": "Photo not found"}), 404
+
+    try:
+        mongo_db.photos.delete_one({"filename": filename})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify({"message": "Photo deleted"}), 200
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

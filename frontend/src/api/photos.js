@@ -11,3 +11,13 @@ export const uploadPhoto = (file) => {
   fd.append("file", file);
   return axios.post(`${API_URL}photos`, fd, authHeader());
 };
+
+export const deletePhoto = (filename) => {
+  return axios
+    .delete(`${API_URL}photos/${filename}`, authHeader())
+    .then((res) => res.data)
+    .catch((err) => {
+      console.error("Failed to delete photo", err);
+      throw err;
+    });
+};

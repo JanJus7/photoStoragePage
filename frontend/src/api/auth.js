@@ -30,4 +30,9 @@ export const authHeader = () => {
   };
 };
 
+export const getClientRoles = () => {
+  console.log("Parsed token in getClientRoles:", keycloak.tokenParsed);
+  return keycloak.tokenParsed?.resource_access?.["carx-spa"]?.roles || [];
+};
+
 export default keycloak;

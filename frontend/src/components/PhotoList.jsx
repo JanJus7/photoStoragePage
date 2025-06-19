@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { getPhotos } from "../api/photos";
-import { getToken } from "../api/auth";
-console.log("PhotoList token:", getToken());
+import { faXmark, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { getPhotos, deletePhoto } from "../api/photos";
+import { getClientRoles } from "../api/auth";
 
 export default function PhotoList({ refreshTrigger }) {
   const [photos, setPhotos] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const isAdmin = getClientRoles().includes("admin");
 
   const fetchPhotos = async () => {
     try {
@@ -24,6 +24,16 @@ export default function PhotoList({ refreshTrigger }) {
     }
   };
 
+  const handleDelete = async (filename) => {
+    try {
+      await deletePhoto(filename);
+      setPhotos((prev) => prev.filter((p) => p.filename !== filename));
+      if (selectedPhoto === filename) setSelectedPhoto(null);
+    } catch (err) {
+      console.error("Failed to delete photo:", err);
+    }
+  };
+
   useEffect(() => {
     fetchPhotos();
   }, [refreshTrigger]);
@@ -33,13 +43,23 @@ export default function PhotoList({ refreshTrigger }) {
       <div className="w-full overflow-x-auto pb-4">
         <div className="flex gap-2 w-max">
           {photos.map((photo, index) => (
-            <img
-              key={index}
-              src={`/uploads/${photo.filename}`}
-              alt={photo.filename}
-              className="w-16 h-16 object-cover rounded cursor-pointer border hover:opacity-80"
-              onClick={() => setSelectedPhoto(photo.filename)}
-            />
+            <div key={index} className="relative group">
+              <img
+                src={`/uploads/${photo.filename}`}
+                alt={photo.filename}
+                className="w-16 h-16 object-cover rounded cursor-pointer border hover:opacity-80"
+                onClick={() => setSelectedPhoto(photo.filename)}
+              />
+              {isAdmin && (
+                <button
+                  onClick={() => handleDelete(photo.filename)}
+                  className="absolute top-0 right-0 bg-red-600 text-white p-1 rounded-full hover:bg-red-700"
+                  title="Usuń zdjęcie"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+              )}
+            </div>
           ))}
         </div>
       </div>
