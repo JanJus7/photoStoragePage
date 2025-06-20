@@ -31,6 +31,17 @@ docker-compose up --build
 
 **Pierwsze uruchomienie** zaimportuje gotowy realm `carXpage` z konfiguracją Keycloak. Dopuki w aplikacji SPA nie doda się żadnych zdjęć do bazy danych, b2b będzie wypisywał pustą tablicę. Po dodaniu zdjęć, trzeba zrestartować kontener b2b żeby pokazał że te zdjęcia faktycznie tam są. 
 
+## Uruchamianie SSR client
+
+```bash
+cd ssr-client
+npm install
+npm start
+```
+
+SSR client nie jest odpalany jak reszta w kontenerze. Było to możliwe, ale po wielu próbach okazało się, że Keycloak redirectuje po loginie na adres niedostępny dla przeglądarki. Wersja kontenerowa wymagałaby NGINX-proxy lub host.docker.internal, co nie działa stabilnie na wszystkich systemach. Aby zachować pełną zgodność z OAuth2 i działający SSR flow, uruchomiłem SSR poza Dockerem — wszystko inne jest konteneryzowane zgodnie z wymaganiami.
+
+
 ---
 
 ## Usługi
@@ -100,6 +111,12 @@ hasło: admin
 
 ```bash
 docker-compose down
+```
+
+lub
+
+```bash
+docker-compose down -v
 ```
 
 ---
