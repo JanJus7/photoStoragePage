@@ -1,5 +1,7 @@
 # Projekt zaliczeniowy
 
+### Oryginalny projekt został udostępniony pod adresem: https://github.com/JanJus7/photoStoragePage
+
 Wielomodułowy system do zarządzania zdjęciami z autoryzacją opartą o OAuth2 (Keycloak), konteneryzacją Docker, i trzema klientami:
 
 - SPA (React)
