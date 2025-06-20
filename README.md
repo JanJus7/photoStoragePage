@@ -21,7 +21,7 @@ Wielomodułowy system do zarządzania zdjęciami z autoryzacją opartą o OAuth2
 W folderze `frontend` utworzyć plik **.env** i wstawić do niego ten tekst:
 ```bash
 VITE_KEYCLOAK_URL=http://localhost:8080
-VITE_API_URL=http://localhost:5000/api/
+VITE_API_URL=/api/
 ```
 
 Następnie:
