@@ -35,6 +35,8 @@ docker-compose up --build
 
 ## Uruchamianie SSR client
 
+- otwieramy osobny terminal (nie zatrzymujemy kontenerów!).
+
 ```bash
 cd ssr-client
 npm install
@@ -80,7 +82,12 @@ Można to sprawdzić pod http://localhost:8080.
 login: admin
 hasło: admin
 ---
+## Podział na role
+`User` jest zwykłą rolą domyślną, może założyć sobie konto, dodać zdjęcia i opisy do swoich zdjęć.
 
+`Admin` widzi WSZYSTKIE zdjęcia i może je usuwać tą rolę nadaje się tylko i wyłącznie przez panel keycloak.
+
+---
 ## Funkcje aplikacji
 
 ### Backend API
